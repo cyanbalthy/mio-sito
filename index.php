@@ -6,65 +6,35 @@
     <body>
 
     <?php
+    require("utility/database.php");
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // The request is using the POST method
     }else if ($_SERVER['REQUEST_METHOD'] === 'GET'){
-        // aggiungere il content-type
-        header('Content-Type: application/json');
-        echo '[
-            {
-              "id": 10001,
-              "birthDate": "1953-09-01",
-              "firstName": "Georgi",
-              "lastName": "Facello",
-              "gender": "M",
-              "hireDate": "1986-06-25",
-            },
-            {
-              "id": 10002,
-              "birthDate": "1964-06-01",
-              "firstName": "Bezalel",
-              "lastName": "Simmel",
-              "gender": "F",
-              "hireDate": "1985-11-20",
-            },
-            {
-              "id": 10003,
-              "birthDate": "1959-12-02",
-              "firstName": "Parto",
-              "lastName": "Bamford",
-              "gender": "M",
-              "hireDate": "1986-08-27",
-            },
-            {
-              "id": 10004,
-              "birthDate": "1954-04-30",
-              "firstName": "Chirstian",
-              "lastName": "Koblick",
-              "gender": "M",
-              "hireDate": "1986-11-30",
-          
-            },
-            {
-              "id": 10005,
-              "birthDate": "1955-01-20",
-              "firstName": "Kyoichi",
-              "lastName": "Maliniak",
-              "gender": "M",
-              "hireDate": "1989-09-11",
-          
-            }
-          ]';
+      // aggiungere il content-type
+
+      $query="select * from dipendenti";
+      if($result=$mysqli->query($query)){
+        while($row=$result->fetch_assoc()){
+          $emparray[] = $row;
+        }
+      }
+
+      $data = json_encode($emparray);
+      
+      header('Content-Type: application/json');
+      echo $data;
     }else if ($_SERVER['REQUEST_METHOD'] === '\DELETE'){
         
     }else if ($_SERVER['REQUEST_METHOD'] === 'PUT'){
         
     }
 
+    mysqli->close()
+    or die ("<br>Chiusura connessione fallita " . $mysqli->error . " ". $mysqli->errno);
 
-
-
+    //docker run --name some-mysql -v /home/informatica/mysqldata:/var/lib/mysql -v /home/lai2/dump:/dump -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest
+    //docker exec -it "nome"
     ?>
 
 
