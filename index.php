@@ -1,4 +1,5 @@
 <?php
+    header('Content-Type: application/json');
     require("utility/database.php");
 
     $page=0;
@@ -13,6 +14,19 @@
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // The request is using the POST method
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        $query="INSERT INTO employees (id, birth_date, first_name, last_name, gender, hire_date)
+        VALUES ('0',
+         ".$mysqli->real_escape_string($data['birth_date']).", 
+         ".$mysqli->real_escape_string($data['first_name']).", 
+         ".$mysqli->real_escape_string($data['last_name']).",
+         ".$mysqli->real_escape_string($data['gender']).",
+         ".$mysqli->real_escape_string($data['hire_date']).")";
+
+        $mysqli->query($query)
+        or die ("<br>Query fallita " . $mysqli->error . " ". $mysqli->error );
+
     }else if ($_SERVER['REQUEST_METHOD'] === 'GET'){
       // aggiungere il content-type
 
@@ -49,8 +63,30 @@
       //header('Content-Type: application/json');
       echo $data;
     }else if ($_SERVER['REQUEST_METHOD'] === '\DELETE'){
-        
+
+      if(!empty($_GET["id"])){
+      $id=$mysqli->real_escape_string($_GET["id"]);
+
+      $query="DELETE FROM employees WHERE employees.id = ".$id."";
+
+      $mysqli->query($query)
+      or die ("<br>Query fallita " . $mysqli->error . " ". $mysqli->error );
+      }
+
     }else if ($_SERVER['REQUEST_METHOD'] === 'PUT'){
+      
+      $data = json_decode(file_get_contents('php://input'), true);
+
+      $query="UPDATE employees
+      SET birth_date = ".$mysqli->real_escape_string($data['birth_date']).",
+       first_name = ".$mysqli->real_escape_string($data['first_name']).", 
+       last_name = ".$mysqli->real_escape_string($data['last_name']).", 
+       gender = ".$mysqli->real_escape_string($data['gender']).", 
+       hire_date = ".$mysqli->real_escape_string($data['hire_date'])."
+      WHERE employees.id = ".$mysqli->real_escape_string($data['id'])."";
+
+      $mysqli->query($query)
+      or die ("<br>Query fallita " . $mysqli->error . " ". $mysqli->error );
         
     }
 
